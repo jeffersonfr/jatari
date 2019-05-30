@@ -59,6 +59,12 @@ enum jatari_key_t {
   KEY_LAST
 };
 
+enum jatari_blit_t {
+  BLIT_NONE,
+  BLIT_FLIP_HORIZONTAL,
+  BLIT_FLIP_VERTICAL
+};
+
 class context {
 
   private:
@@ -66,6 +72,8 @@ class context {
       _raster;
     uint32_t 
       *_palette;
+    jatari_blit_t
+      _blit;
     bool 
       _fill;
 
@@ -124,11 +132,24 @@ class context {
       _raster.SetColor(_palette[index]);
     }
 
+    void blit(jatari_blit_t blit)
+    {
+      _blit = blit;
+    }
+
     void sprite(uint8_t obj[], jgui::jregion_t<int> region)
     {
       for (int j=0; j<region.height; j++) {
         for (int i=0; i<region.width; i++) {
-          int c = obj[j*region.width + i];
+          int k = j*region.width + i;
+
+          if (_blit == BLIT_FLIP_HORIZONTAL) {
+            k = j*region.width + (region.width - i - 1);
+          } else if (_blit == BLIT_FLIP_VERTICAL) {
+            k = (region.height - j - 1)*region.width + i;
+          }
+
+          int c = obj[k];
 
           if (c != 0) {
             color(c);
@@ -136,13 +157,6 @@ class context {
           }
         }
       }
-
-      // INFO:: debug mode
-      /*
-      color(0x04);
-      fill(false);
-      rect(region);
-      */
     }
 
 };
@@ -150,16 +164,17 @@ class context {
 class Atari : public jgui::Window {
 
   private:
+    std::chrono::time_point<std::chrono::steady_clock> 
+      _start_time = std::chrono::steady_clock::now();
     jgui::Image 
       *_screen;
 
   private:
     void Framerate(int fps)
     {
-      static auto begin = std::chrono::steady_clock::now();
       static int index = 0;
 
-      std::chrono::time_point<std::chrono::steady_clock> timestamp = begin + std::chrono::milliseconds(index++*(1000/fps));
+      std::chrono::time_point<std::chrono::steady_clock> timestamp = _start_time + std::chrono::milliseconds(index++*(1000/fps));
       std::chrono::time_point<std::chrono::steady_clock> current = std::chrono::steady_clock::now();
       std::chrono::milliseconds diff = std::chrono::duration_cast<std::chrono::milliseconds>(timestamp - current);
 
@@ -172,16 +187,18 @@ class Atari : public jgui::Window {
 
     virtual void Paint(jgui::Graphics *g)
     {
-      static int counter = 0;
+      std::chrono::milliseconds 
+        diff = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _start_time);
+      context 
+        ctx(_screen->GetGraphics());
 
-      context ctx(_screen->GetGraphics());
-
-      loop(counter++);
+      loop(diff.count());
       draw(ctx);
 
       _screen->GetGraphics()->SetAntialias(jgui::JAM_NONE);
 
-      jgui::Image *scaled = _screen->Scale(GetSize());
+      jgui::Image 
+        *scaled = _screen->Scale(GetSize());
 
       g->DrawImage(scaled, jgui::jpoint_t<int>{0, 0});
 
@@ -209,14 +226,9 @@ class Atari : public jgui::Window {
       SetSize(size);
     }
 
-    int width()
+    jgui::jsize_t<int> size()
     {
-      return SW;
-    }
-
-    int height()
-    {
-      return SH;
+      return {SW, SH};
     }
 
     virtual void loop(int64_t timestamp)

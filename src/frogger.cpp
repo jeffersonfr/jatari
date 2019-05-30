@@ -32,15 +32,16 @@ struct sprite_t {
       14, 8
     },
     .data = {
-      0x00, 0x00, 0x0f, 0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
-      0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
-      0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
-      0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
-      0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
-      0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
-      0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
-      0x00, 0x00, 0x0f, 0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
-    }
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00, 0x0f, 0x00, 0x00,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00, 0x0f, 0x00, 0x00,
+
+    },
   },
   aligator = {
     .size = {
@@ -240,14 +241,14 @@ class Frogger : public Atari {
           .pos = {
             .x = 0.0f*aligator.size.width,
             .y = 2
-          },
+          }
       });
       _objects.push_back({
           .sprite = &aligator,
           .pos = {
             .x = 3.0f*aligator.size.width,
             .y = 2
-          },
+          }
       });
       // 3 turtles
       _objects.push_back({
@@ -255,21 +256,21 @@ class Frogger : public Atari {
           .pos = {
             .x = 0*turtle.size.width,
             .y = 3
-          },
+          }
       });
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
             .x = 2.0f*turtle.size.width,
             .y = 3
-          },
+          }
       });
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
             .x = 4.0f*turtle.size.width,
             .y = 3
-          },
+          }
       });
       // 3 joined trunks
       _objects.push_back({
@@ -277,21 +278,21 @@ class Frogger : public Atari {
           .pos = {
             .x = 0.0f*trunk.size.width,
             .y = 4
-          },
+          }
       });
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
             .x = 1.0f*trunk.size.width,
             .y = 4
-          },
+          }
       });
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
             .x = 2.0f*trunk.size.width,
             .y = 4
-          },
+          }
       });
 
       // 3 spaced trunks
@@ -300,21 +301,21 @@ class Frogger : public Atari {
           .pos = {
             .x = 0.0f*trunk.size.width,
             .y = 5
-          },
+          }
       });
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
             .x = 2.0f*trunk.size.width,
             .y = 5
-          },
+          }
       });
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
             .x = 4.0f*trunk.size.width,
             .y = 5
-          },
+          }
       });
       
       // 3 spaced turtles
@@ -323,44 +324,44 @@ class Frogger : public Atari {
           .pos = {
             .x = 0.0f*turtle.size.width,
             .y = 6
-          },
+          }
       });
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
             .x = 2.0f*turtle.size.width,
             .y = 6
-          },
+          }
       });
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
             .x = 4.0f*turtle.size.width,
             .y = 6
-          },
+          }
       });
 
       // road objects
       _objects.push_back({
           .sprite = &truck,
           .pos = {
-            .x = 10,
+            .x = 0,
             .y = 8
-          },
+          }
       });
       _objects.push_back({
           .sprite = &car_01,
           .pos = {
             .x = 10,
             .y = 9
-          },
+          }
       });
       _objects.push_back({
           .sprite = &car_02,
           .pos = {
-            .x = 10,
+            .x = 0,
             .y = 10
-          },
+          }
       });
 			// double cars 01
       _objects.push_back({
@@ -368,14 +369,14 @@ class Frogger : public Atari {
           .pos = {
             .x = 0.0f*car_03.size.width,
             .y = 11
-          },
+          }
       });
       _objects.push_back({
           .sprite = &car_03,
           .pos = {
             .x = 2.0f*car_03.size.width,
             .y = 11
-          },
+          }
       });
 			// double cars 02
       _objects.push_back({
@@ -383,21 +384,21 @@ class Frogger : public Atari {
           .pos = {
             .x = 8.0f*car_03.size.width,
             .y = 11
-          },
+          }
       });
       _objects.push_back({
           .sprite = &car_03,
           .pos = {
             .x = 10.0f*car_03.size.width,
             .y = 11
-          },
+          }
       });
       _objects.push_back({
           .sprite = &car_01,
           .pos = {
-            .x = 10,
+            .x = 0,
             .y = 12
-          },
+          }
       });
     }
 
@@ -507,7 +508,13 @@ class Frogger : public Atari {
 			ctx.rect({_block.width, 12*_block.height, SW - 2*_block.width, _block.height});
 
 			for (auto &object : _objects) {
+        if (_velocity[(int)object.pos.y] < 0) {
+          ctx.blit(BLIT_FLIP_HORIZONTAL);
+        }
+
 				ctx.sprite(object.sprite->data, {(int)object.pos.x, (int)(object.pos.y*_block.height + (_block.height - object.sprite->size.height)/2), object.sprite->size.width, object.sprite->size.height});
+
+        ctx.blit(BLIT_NONE);
 
 				object.pos.x = object.pos.x + _velocity[(int)object.pos.y];
 
