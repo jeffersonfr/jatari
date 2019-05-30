@@ -5,11 +5,15 @@ include_directories(
   ${jlibcpp_INCLUDE_DIRS}
 )
 
-add_executable(frogger
-  frogger.cpp
-)
+macro(game)
+  add_executable(${ARGV0}
+    ${ARGV0}.cpp
+  )
+target_link_libraries(${ARGV0}
+    ${jlibcpp_LIBRARIES}
+  )
+endmacro()
 
-target_link_libraries(frogger
-  ${jlibcpp_LIBRARIES}
-)
+game(frogger)
+game(pong)
 

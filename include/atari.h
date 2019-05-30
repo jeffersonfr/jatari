@@ -111,7 +111,7 @@ class context {
       }
     }
 
-    void arc(int x, int y, int rad, int ang0, int ang1)
+    void arc(int x, int y, int rad, float ang0, float ang1)
     {
       if (_fill == false) {
         _raster.DrawArc({x, y}, {rad, rad}, (float)ang0, (float)ang1);
