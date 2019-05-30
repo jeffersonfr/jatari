@@ -62,7 +62,10 @@ enum jatari_key_t {
 enum jatari_blit_t {
   BLIT_NONE,
   BLIT_FLIP_HORIZONTAL,
-  BLIT_FLIP_VERTICAL
+  BLIT_FLIP_VERTICAL,
+  BLIT_ROTATE_90,
+  BLIT_ROTATE_180,
+  BLIT_ROTATE_270,
 };
 
 class context {
@@ -139,21 +142,56 @@ class context {
 
     void sprite(uint8_t obj[], jgui::jregion_t<int> region)
     {
-      for (int j=0; j<region.height; j++) {
-        for (int i=0; i<region.width; i++) {
-          int k = j*region.width + i;
+      if (_blit == BLIT_ROTATE_90) {
+        for (int j=0; j<region.width; j++) {
+          for (int i=0; i<region.height; i++) {
+            int c = obj[i*region.width + (region.width - j - 1)];
 
-          if (_blit == BLIT_FLIP_HORIZONTAL) {
-            k = j*region.width + (region.width - i - 1);
-          } else if (_blit == BLIT_FLIP_VERTICAL) {
-            k = (region.height - j - 1)*region.width + i;
+            if (c != 0) {
+              color(c);
+              pixel(region.x + i, region.y + j);
+            }
           }
+        }
+      } else if (_blit == BLIT_ROTATE_180) {
+        for (int j=0; j<region.height; j++) {
+          for (int i=0; i<region.width; i++) {
+            int c = obj[(region.height - j - 1)*region.width + (region.width - i - 1)];
 
-          int c = obj[k];
+            if (c != 0) {
+              color(c);
+              pixel(region.x + i, region.y + j);
+            }
+          }
+        }
+      } else if (_blit == BLIT_ROTATE_270) {
+        for (int j=0; j<region.width; j++) {
+          for (int i=0; i<region.height; i++) {
+            int c = obj[(region.height - i - 1)*region.width + j];
 
-          if (c != 0) {
-            color(c);
-            pixel(region.x + i, region.y + j);
+            if (c != 0) {
+              color(c);
+              pixel(region.x + i, region.y + j);
+            }
+          }
+        }
+      } else {
+        for (int j=0; j<region.height; j++) {
+          for (int i=0; i<region.width; i++) {
+            int k = j*region.width + i;
+
+            if (_blit == BLIT_FLIP_HORIZONTAL) {
+              k = j*region.width + (region.width - i - 1);
+            } else if (_blit == BLIT_FLIP_VERTICAL) {
+              k = (region.height - j - 1)*region.width + i;
+            }
+
+            int c = obj[k];
+
+            if (c != 0) {
+              color(c);
+              pixel(region.x + i, region.y + j);
+            }
           }
         }
       }
