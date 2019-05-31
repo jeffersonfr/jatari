@@ -240,11 +240,15 @@ class Pong : public Atari {
         _ball_pos = {SW/2, SH/2};
         _ball_vel.y = random()%6 - 3 + 1;
       } else if (
-          (_ball_pos.x >= _player0_pos.x and _ball_pos.x <= _player0_pos.x + 3 and _ball_pos.y > _player0_pos.y and _ball_pos.y < _player0_pos.y + SIZE) or
+          (_ball_pos.x >= _player0_pos.x and _ball_pos.x <= _player0_pos.x + 3 and _ball_pos.y > _player0_pos.y and _ball_pos.y < _player0_pos.y + SIZE)) {
+        _ball_vel.x = -_ball_vel.x;
+        _ball_vel.y = -((_player0_pos.y + SIZE/2) - _ball_pos.y)/2;
+      } else if (
           (_ball_pos.x >= _player1_pos.x - 3 and _ball_pos.x <= _player1_pos.x and _ball_pos.y > _player1_pos.y and _ball_pos.y < _player1_pos.y + SIZE)) {
         _ball_vel.x = -_ball_vel.x;
+        _ball_vel.y = -((_player1_pos.y + SIZE/2) - _ball_pos.y)/2;
       }
-
+        
       if (_ball_pos.y < 2*LIMIT or _ball_pos.y > SH - 2*LIMIT) {
         _ball_vel.y = -_ball_vel.y;
       }
