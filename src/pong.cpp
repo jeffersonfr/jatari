@@ -234,9 +234,11 @@ class Pong : public Atari {
       if (_ball_pos.x < 2*LIMIT) {
         _player1_score = _player1_score + 1;
         _ball_pos = {SW/2, SH/2};
+        _ball_vel.y = random()%6 - 3 + 1;
       } else if (_ball_pos.x > SW - 2*LIMIT) {
         _player0_score = _player0_score + 1;
         _ball_pos = {SW/2, SH/2};
+        _ball_vel.y = random()%6 - 3 + 1;
       } else if (
           (_ball_pos.x >= _player0_pos.x and _ball_pos.x <= _player0_pos.x + 3 and _ball_pos.y > _player0_pos.y and _ball_pos.y < _player0_pos.y + SIZE) or
           (_ball_pos.x >= _player1_pos.x - 3 and _ball_pos.x <= _player1_pos.x and _ball_pos.y > _player1_pos.y and _ball_pos.y < _player1_pos.y + SIZE)) {
@@ -256,9 +258,9 @@ class Pong : public Atari {
       }
 
       if (key(KEY_UP)) {
-        _player0_pos.y = _player0_pos.y - 3;
+        _player0_pos.y = _player0_pos.y - 5;
       } else if (key(KEY_DOWN)) {
-        _player0_pos.y = _player0_pos.y + 3;
+        _player0_pos.y = _player0_pos.y + 5;
       }
 
       if (_player0_pos.y < 3*LIMIT) {
@@ -290,6 +292,11 @@ class Pong : public Atari {
 			ctx.rect({_player0_pos.x, _player0_pos.y, 2, SIZE});
 			ctx.rect({_player1_pos.x, _player1_pos.y, 2, SIZE});
       
+      // line
+      for (int i=0; i<11; i++) {
+			  ctx.rect({SW/2, 3*LIMIT + i*(10 + 4), 1, 10});
+      }
+
       // ball
 			ctx.arc(_ball_pos.x, _ball_pos.y, 3, 0.0f, 2.0f*M_PI);
       
@@ -308,7 +315,6 @@ class Pong : public Atari {
     }
 
 };
-
 
 int main(int argc, char **argv)
 {
