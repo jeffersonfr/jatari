@@ -613,6 +613,7 @@ class Frogger : public Atari {
               _houses[house] = true;
 
               // reset position
+					    _timeout = TIMEOUT;
               _frogger.pos = {
                 .x = (SW - frogger.size.width)/2.0f, 
                 .y = 13

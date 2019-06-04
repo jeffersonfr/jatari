@@ -240,11 +240,11 @@ class Pong : public Atari {
         _ball_pos = {SW/2, SH/2};
         _ball_vel.y = random()%6 - 3 + 1;
       } else if (
-          (_ball_pos.x >= _player0_pos.x and _ball_pos.x <= _player0_pos.x + 3 and _ball_pos.y > _player0_pos.y and _ball_pos.y < _player0_pos.y + SIZE)) {
+          (_ball_pos.x >= _player0_pos.x and _ball_pos.x <= _player0_pos.x + 3 and (_ball_pos.y + 2) > _player0_pos.y and (_ball_pos.y - 2*2) < _player0_pos.y + SIZE)) {
         _ball_vel.x = -_ball_vel.x;
         _ball_vel.y = -((_player0_pos.y + SIZE/2) - _ball_pos.y)/2;
       } else if (
-          (_ball_pos.x >= _player1_pos.x - 3 and _ball_pos.x <= _player1_pos.x and _ball_pos.y > _player1_pos.y and _ball_pos.y < _player1_pos.y + SIZE)) {
+          (_ball_pos.x >= _player1_pos.x - 3 and _ball_pos.x <= _player1_pos.x and (_ball_pos.y + 2) > _player1_pos.y and (_ball_pos.y - 2*2) < _player1_pos.y + SIZE)) {
         _ball_vel.x = -_ball_vel.x;
         _ball_vel.y = -((_player1_pos.y + SIZE/2) - _ball_pos.y)/2;
       }
@@ -302,7 +302,7 @@ class Pong : public Atari {
       }
 
       // ball
-			ctx.arc(_ball_pos.x, _ball_pos.y, 3, 0.0f, 2.0f*M_PI);
+			ctx.rect({_ball_pos.x-2, _ball_pos.y-2, 4, 4});
       
       // borders
 			ctx.fill(false);
@@ -314,8 +314,8 @@ class Pong : public Atari {
       ctx.sprite(numbers[_player0_score/10], {50 + 0*(8 + 1), 3*LIMIT, 8, 16});
       ctx.sprite(numbers[_player0_score%10], {50 + 1*(8 + 1), 3*LIMIT, 8, 16});
       
-      ctx.sprite(numbers[_player1_score/10], {90 + 0*(8 + 1), 3*LIMIT, 8, 16});
-      ctx.sprite(numbers[_player1_score%10], {90 + 1*(8 + 1), 3*LIMIT, 8, 16});
+      ctx.sprite(numbers[_player1_score/10], {SW - 66 + 0*(8 + 1), 3*LIMIT, 8, 16});
+      ctx.sprite(numbers[_player1_score%10], {SW - 66 + 1*(8 + 1), 3*LIMIT, 8, 16});
     }
 
 };
