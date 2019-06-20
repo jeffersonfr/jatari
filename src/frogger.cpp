@@ -528,11 +528,15 @@ class Frogger : public Atari {
         }
       }
 
-      jgui::jregion_t<int> fregion = {
-        .x = (int)_frogger.pos.x,
-        .y = (int)(_frogger.pos.y*_block.height + (_block.height - _frogger.sprite->size.height)/2),
-        .width = (int)_frogger.sprite->size.width,
-        .height = (int)_frogger.sprite->size.height
+      jgui::jrect_t<int> fregion = {
+        .point = {
+          .x = (int)_frogger.pos.x,
+          .y = (int)(_frogger.pos.y*_block.height + (_block.height - _frogger.sprite->size.height)/2)
+        },
+        .size = {
+          .width = (int)_frogger.sprite->size.width,
+          .height = (int)_frogger.sprite->size.height
+        }
       };
 
       // frogger
@@ -555,11 +559,15 @@ class Frogger : public Atari {
       // colision
       if (_frogger.alive == true and _frogger.pos.x > _block.width and _frogger.pos.x < (SW - _block.width)) {
         for (auto &object : _objects) {
-          jgui::jregion_t<int> oregion = {
-            .x = (int)object.pos.x,
-            .y = (int)(object.pos.y*_block.height + (_block.height - object.sprite->size.height)/2),
-            .width = (int)object.sprite->size.width,
-            .height = (int)object.sprite->size.height
+          jgui::jrect_t<int> oregion = {
+            .point = {
+              .x = (int)object.pos.x,
+              .y = (int)(object.pos.y*_block.height + (_block.height - object.sprite->size.height)/2)
+            },
+            .size = {
+              .width = (int)object.sprite->size.width,
+              .height = (int)object.sprite->size.height
+            }
           };
 
           if (_frogger.pos.y >= 2 and _frogger.pos.y <= 6) { // lake
@@ -584,11 +592,15 @@ class Frogger : public Atari {
           int house = -1;
 
           for (int i=0; i<9; i++) {
-            jgui::jregion_t<int> oregion = {
-              .x = (int)i*x + _block.width,
-              .y = (int)(_block.height),
-              .width = (int)x,
-              .height = (int)_block.height
+            jgui::jrect_t<int> oregion = {
+              .point = {
+                .x = (int)i*x + _block.width,
+                .y = (int)(_block.height)
+              },
+              .size = {
+                .width = (int)x,
+                .height = (int)_block.height
+              }
             };
 
             if (collide(fregion, oregion) == true) {

@@ -99,10 +99,10 @@ class context {
 
     void line(int x0, int y0, int x1, int y1)
     {
-      _raster.DrawLine({{x0, y0}, {x1, y1}});
+      _raster.DrawLine({x0, y0}, {x1, y1});
     }
 
-    void rect(jgui::jregion_t<int> region)
+    void rect(jgui::jrect_t<int> region)
     {
       if (_fill == false) {
         _raster.DrawRectangle(region);
@@ -140,57 +140,57 @@ class context {
       _blit = blit;
     }
 
-    void sprite(uint8_t obj[], jgui::jregion_t<int> region)
+    void sprite(uint8_t obj[], jgui::jrect_t<int> region)
     {
       if (_blit == BLIT_ROTATE_90) {
-        for (int j=0; j<region.width; j++) {
-          for (int i=0; i<region.height; i++) {
-            int c = obj[i*region.width + (region.width - j - 1)];
+        for (int j=0; j<region.size.width; j++) {
+          for (int i=0; i<region.size.height; i++) {
+            int c = obj[i*region.size.width + (region.size.width - j - 1)];
 
             if (c != 0) {
               color(c);
-              pixel(region.x + i, region.y + j);
+              pixel(region.point.x + i, region.point.y + j);
             }
           }
         }
       } else if (_blit == BLIT_ROTATE_180) {
-        for (int j=0; j<region.height; j++) {
-          for (int i=0; i<region.width; i++) {
-            int c = obj[(region.height - j - 1)*region.width + (region.width - i - 1)];
+        for (int j=0; j<region.size.height; j++) {
+          for (int i=0; i<region.size.width; i++) {
+            int c = obj[(region.size.height - j - 1)*region.size.width + (region.size.width - i - 1)];
 
             if (c != 0) {
               color(c);
-              pixel(region.x + i, region.y + j);
+              pixel(region.point.x + i, region.point.y + j);
             }
           }
         }
       } else if (_blit == BLIT_ROTATE_270) {
-        for (int j=0; j<region.width; j++) {
-          for (int i=0; i<region.height; i++) {
-            int c = obj[(region.height - i - 1)*region.width + j];
+        for (int j=0; j<region.size.width; j++) {
+          for (int i=0; i<region.size.height; i++) {
+            int c = obj[(region.size.height - i - 1)*region.size.width + j];
 
             if (c != 0) {
               color(c);
-              pixel(region.x + i, region.y + j);
+              pixel(region.point.x + i, region.point.y + j);
             }
           }
         }
       } else {
-        for (int j=0; j<region.height; j++) {
-          for (int i=0; i<region.width; i++) {
-            int k = j*region.width + i;
+        for (int j=0; j<region.size.height; j++) {
+          for (int i=0; i<region.size.width; i++) {
+            int k = j*region.size.width + i;
 
             if (_blit == BLIT_FLIP_HORIZONTAL) {
-              k = j*region.width + (region.width - i - 1);
+              k = j*region.size.width + (region.size.width - i - 1);
             } else if (_blit == BLIT_FLIP_VERTICAL) {
-              k = (region.height - j - 1)*region.width + i;
+              k = (region.size.height - j - 1)*region.size.width + i;
             }
 
             int c = obj[k];
 
             if (c != 0) {
               color(c);
-              pixel(region.x + i, region.y + j);
+              pixel(region.point.x + i, region.point.y + j);
             }
           }
         }
@@ -296,9 +296,9 @@ class Atari : public jgui::Window {
       return false;
     }
 
-    bool collide(jgui::jregion_t<int> r1, jgui::jregion_t<int> r2)
+    bool collide(jgui::jrect_t<int> r1, jgui::jrect_t<int> r2)
     {
-      if ((r1.x + r1.width) >= r2.x && r1.x <= (r2.x + r2.width) && (r1.y + r1.height) >= r2.y && r1.y <= (r2.y + r2.height)) {
+      if ((r1.point.x + r1.size.width) >= r2.point.x && r1.point.x <= (r2.point.x + r2.size.width) && (r1.point.y + r1.size.height) >= r2.point.y && r1.point.y <= (r2.point.y + r2.size.height)) {
         return true;
       }
 
@@ -306,5 +306,4 @@ class Atari : public jgui::Window {
     }
 
 };
-
 
