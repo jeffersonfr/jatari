@@ -16,4 +16,4 @@ endmacro()
 
 game(frogger)
 game(pong)
-
+game(asteroids)
