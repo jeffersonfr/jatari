@@ -24,9 +24,10 @@
 #define SCALE 8
 
 struct asteroid_t {
-	jgui::jpoint_t<int> pos;
-	jgui::jpoint_t<int> dir;
+	jgui::jpoint_t<float> pos;
+	jgui::jpoint_t<float> dir;
 	std::vector<int> vertices;
+  float angle;
 	int level;
 	bool alive;
 };
@@ -38,11 +39,19 @@ struct player_t {
 	int fire = 0;
 };
 
+struct fire_t {
+  jgui::jpoint_t<float> pos;
+  jgui::jpoint_t<float> dir;
+  bool alive;
+};
+
 class Asteroids : public Atari {
 
   private:
 		std::vector<asteroid_t> _asteroids;
+		std::vector<fire_t> _fires;
 		player_t _player;
+    bool _game_over;
 
   public:
     Asteroids():
@@ -50,15 +59,18 @@ class Asteroids : public Atari {
     {
 			srandom(time(NULL));
 
+      _game_over = false;
+
 			_player = {
 				.pos = {SW/2.0f, SH/2.0f},
 				.angle = 0.0f,
-				.vel = 0.0f
-				};
+				.vel = 0.0f,
+        .fire = 0
+			};
 
 			for (int i=0; i<ASTEROIDS; i++) {
 				jgui::jpoint_t<int> 
-					pos {random()%SW, random()%SH};
+					pos {(int)(random()%SW), (int)(random()%SH)};
 
 				if (pos.Distance(jgui::jpoint_t<int>{SW/2, SH/2}) < 32) {
 					i = i - 1;
@@ -69,16 +81,17 @@ class Asteroids : public Atari {
 				asteroid_t 
 					t {
 						.pos = pos,
+            .angle = 0.0f,
 						.alive = true
 					};
 
 				do {
-					t.dir = jgui::jpoint_t<int>{random()%3 - 1, random()%3 - 1};
+					t.dir = jgui::jpoint_t<int>{(int)(random()%3 - 1), (int)(random()%3 - 1)};
 				} while (t.dir.x == 0 and t.dir.y == 0);
 
-				t.level = 2;
+				t.level = 1;
 
-				for (int j=0; j<SIDES; j++) {
+				for (int j=0; j<SIDES/t.level; j++) {
 					t.vertices.push_back(random()%3);
 				}
 
@@ -90,34 +103,52 @@ class Asteroids : public Atari {
     {
     }
 
-    virtual void loop(int64_t timestamp)
+    void player_event()
     {
-      if (key(KEY_UP)) {
-				_player.vel = _player.vel + 0.1f;
+      if (_game_over == false and key(KEY_UP)) {
+				_player.vel = _player.vel + 0.2f;
 
-				if (_player.vel > 5.0f) {
-					_player.vel = 5.0f;
+				if (_player.vel > 2.0f) {
+					_player.vel = 2.0f;
 				}
 			}
 
-      if (key(KEY_DOWN)) {
-				_player.vel = _player.vel - 1.0f;
+      if (_game_over == false and key(KEY_DOWN)) {
+				_player.vel = _player.vel - 0.2f;
 
-				if (_player.vel < -5.0f) {
-					_player.vel = -5.0f;
+				if (_player.vel < -2.0f) {
+					_player.vel = -2.0f;
 				}
 			}
 
-      if (key(KEY_LEFT)) {
+      if (_game_over == false and key(KEY_LEFT)) {
 				_player.angle = _player.angle - 0.1f;
 			}
 
-      if (key(KEY_RIGHT)) {
+      if (_game_over == false and key(KEY_RIGHT)) {
 				_player.angle = _player.angle + 0.1f;
+			}
+
+      if (_game_over == false and key(KEY_ACTION)) {
+        if (_player.fire > 0) {
+          fire_t t {
+            .pos = _player.pos, 
+            .dir {2.0f*cosf(_player.angle), 2.0f*sinf(_player.angle)},
+            .alive = true
+          };
+
+          // INFO:: fire from the front of space ship
+          t.pos = t.pos + SCALE*t.dir;
+
+          _fires.push_back(t);
+
+          _player.fire = -3;
+        }
 			}
 
 			_player.pos.x = _player.pos.x + _player.vel*cos(_player.angle);
 			_player.pos.y = _player.pos.y + _player.vel*sin(_player.angle);
+      _player.fire = _player.fire + 1;
 
 			if ((_player.pos.x + 5) < 0) {
 				_player.pos.x = SW + 5;
@@ -134,7 +165,23 @@ class Asteroids : public Atari {
 			if ((_player.pos.y - 5) > SH) {
 				_player.pos.y = -5;
 			}
+    }
 
+    void colide_ship()
+    {
+      for (int i=0; i<16; i++) {
+        fire_t t {
+          .pos = _player.pos, 
+          .dir {2.0f*cosf(i*2.0f*M_PI/16.0f), 2.0f*sinf(i*2.0f*M_PI/16.0f)},
+          .alive = true
+        };
+
+        _fires.push_back(t);
+      }
+    }
+
+    virtual void loop(int64_t timestamp)
+    {
 			for (auto &t : _asteroids) {
 				t.pos = t.pos + t.dir;
 
@@ -153,8 +200,74 @@ class Asteroids : public Atari {
 				if ((t.pos.y - SCALE) > SH) {
 					t.pos.y = -SCALE;
 				}
-
 			}
+
+			for (auto &asteroid : _asteroids) {
+        if (_game_over == false and _player.pos.Distance(asteroid.pos) < 2*SCALE/asteroid.level) {
+          colide_ship();
+
+          _player.vel = 0.0f;
+          _game_over = true;
+
+          break;
+        }
+
+        // INFO:: verify if collide with fire
+        for (auto &fire : _fires) {
+          if (fire.pos.Distance(asteroid.pos) < SCALE/asteroid.level) {
+            asteroid.alive = false;
+            fire.alive = false;
+
+            if (asteroid.level == 2) {
+              break;
+            }
+
+            // INFO:: add some small asteroids
+            for (int i=0; i<3; i++) {
+              asteroid_t 
+                t {
+                  .pos = asteroid.pos,
+                  .angle = 0.0f,
+                  .alive = true
+                };
+
+              do {
+                t.dir = jgui::jpoint_t<int>{(int)(random()%3 - 1), (int)(random()%3 - 1)};
+              } while (t.dir.x == 0 and t.dir.y == 0);
+
+              t.level = 2;
+
+              for (int j=0; j<SIDES/t.level; j++) {
+                t.vertices.push_back(random()%3);
+              }
+
+              _asteroids.push_back(t);
+            }
+
+            break;
+          }
+        }
+			}
+      
+      for (auto &fire : _fires) {
+        fire.pos = fire.pos + fire.dir;
+              
+        if (fire.pos.x < 0 or fire.pos.y < 0 or fire.pos.x > SW or fire.pos.y > SH) {
+          fire.alive = false;
+        }
+      }
+
+      _asteroids.erase(std::remove_if(_asteroids.begin(), _asteroids.end(), 
+            [](asteroid_t &asteroid) {
+              return asteroid.alive == false;
+            }), _asteroids.end());
+
+      _fires.erase(std::remove_if(_fires.begin(), _fires.end(), 
+            [](fire_t &fire) {
+              return fire.alive == false;
+            }), _fires.end());
+
+      player_event();
     }
 
 		virtual void draw(context &ctx)
@@ -162,24 +275,32 @@ class Asteroids : public Atari {
 			// background
 			ctx.fill(true);
 			ctx.color(0x00);
-			ctx.rect({0, 0, SW, SH});
+			ctx.rect(0, 0, SW, SH);
 			
       // player
+      jgui::jpoint_t<float>
+        p0 {SCALE, 0},
+			  p1 {-SCALE/2, SCALE/2},
+			  p2 {-SCALE/2, -SCALE/2};
+
+      p0 = p0.Rotate(_player.angle) + _player.pos;
+      p1 = p1.Rotate(_player.angle) + _player.pos;
+      p2 = p2.Rotate(_player.angle) + _player.pos;
+
 			ctx.color(0x0f);
-			ctx.fill(false);
-			ctx.arc(_player.pos.x, _player.pos.y, 3, 0.0f, 2.0f*M_PI);
-			ctx.line(
-				_player.pos.x + 3*cos(_player.angle), _player.pos.y + 3*sin(_player.angle),
-				_player.pos.x + 5*cos(_player.angle), _player.pos.y + 5*sin(_player.angle));
+
+      if (_game_over == true) {
+			  ctx.color(0x04);
+      }
+
+			ctx.line(p0.x, p0.y, p1.x, p1.y);
+			ctx.line(p1.x, p1.y, p2.x, p2.y);
+			ctx.line(p2.x, p2.y, p0.x, p0.y);
 
 			// asteroids
-			for (int i=0; i<ASTEROIDS; i++) {
-				asteroid_t t = _asteroids[i];
+			ctx.color(0x01);
 
-				if (t.alive == false) {
-					continue;
-				}
-
+			for (auto &t : _asteroids) {
 				jgui::jpoint_t<int> 
 					p0;
 
@@ -187,10 +308,10 @@ class Asteroids : public Atari {
 					int
 						k = j%t.vertices.size();
 					float 
-						angle = k*2.0f*M_PI/t.vertices.size();
+						angle = k*2.0f*M_PI/t.vertices.size() + t.angle;
 
 					jgui::jpoint_t<int> 
-						p1 {t.pos.x + (SCALE + t.vertices[k])*cos(angle), t.pos.y + (SCALE + t.vertices[k])*sin(angle)};
+						p1 {(int)(t.pos.x + (SCALE/t.level + t.vertices[k])*cosf(angle)), (int)(t.pos.y + (SCALE/t.level + t.vertices[k])*sinf(angle))};
 
 					if (j != 0) {
 						ctx.line(p0.x, p0.y, p1.x, p1.y);
@@ -198,7 +319,16 @@ class Asteroids : public Atari {
 
 					p0 = p1;
 				}
+
+        t.angle = t.angle + (random()%100)/1000.0f;
 			}
+			
+      ctx.fill(false);
+      ctx.color(0x0f);
+
+      for (auto &t : _fires) {
+        ctx.arc(t.pos.x, t.pos.y, 1, 0.0f, 2.0f*M_PI);
+      }
     }
 
 };

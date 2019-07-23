@@ -102,12 +102,12 @@ class context {
       _raster.DrawLine({x0, y0}, {x1, y1});
     }
 
-    void rect(jgui::jrect_t<int> region)
+    void rect(int x, int y, int w, int h)
     {
       if (_fill == false) {
-        _raster.DrawRectangle(region);
+        _raster.DrawRectangle(jgui::jrect_t<int>{x, y, w, h});
       } else {
-        _raster.FillRectangle(region);
+        _raster.FillRectangle(jgui::jrect_t<int>{x, y, w, h});
       }
     }
 
@@ -248,7 +248,7 @@ class Atari : public jgui::Window {
 
   public:
     Atari():
-      jgui::Window(0, 0, 720, 480)
+      jgui::Window(0, 0, 640, 480)
     {
       _screen = new jgui::BufferedImage(jgui::JPF_RGB32, {SW, SH});
     }
@@ -290,7 +290,7 @@ class Atari : public jgui::Window {
       } else if (k == KEY_DOWN) {
         return (ev->IsKeyDown(jevent::JKS_CURSOR_DOWN));
       } else if (k == KEY_ACTION) {
-        return (ev->IsKeyDown(jevent::JKS_ENTER));
+        return (ev->IsKeyDown(jevent::JKS_SPACE));
       }
 
       return false;

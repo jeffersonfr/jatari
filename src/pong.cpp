@@ -289,25 +289,25 @@ class Pong : public Atari {
 			// background
 			ctx.fill(true);
 			ctx.color(0x00);
-			ctx.rect({0, 0, SW, SH});
+			ctx.rect(0, 0, SW, SH);
 			
       // players
 			ctx.color(0x0f);
-			ctx.rect({_player0_pos.x, _player0_pos.y, 2, SIZE});
-			ctx.rect({_player1_pos.x, _player1_pos.y, 2, SIZE});
+			ctx.rect(_player0_pos.x, _player0_pos.y, 2, SIZE);
+			ctx.rect(_player1_pos.x, _player1_pos.y, 2, SIZE);
       
       // line
       for (int i=0; i<11; i++) {
-			  ctx.rect({SW/2, 3*LIMIT + i*(10 + 4), 1, 10});
+			  ctx.rect(SW/2, 3*LIMIT + i*(10 + 4), 1, 10);
       }
 
       // ball
-			ctx.rect({_ball_pos.x-2, _ball_pos.y-2, 4, 4});
+			ctx.rect(_ball_pos.x-2, _ball_pos.y-2, 4, 4);
       
       // borders
 			ctx.fill(false);
       for (int i=0; i<5; i++) {
-			  ctx.rect({LIMIT + i, LIMIT + i, SW - 2*LIMIT - 2*i, SH - 2*LIMIT - 2*i});
+			  ctx.rect(LIMIT + i, LIMIT + i, SW - 2*LIMIT - 2*i, SH - 2*LIMIT - 2*i);
       }
 
       // score
