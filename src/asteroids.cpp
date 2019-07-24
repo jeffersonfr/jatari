@@ -470,7 +470,7 @@ class Asteroids : public Atari {
 			// background
 			ctx.fill(true);
 			ctx.color(0x00);
-			ctx.rect(0, 0, SW, SH);
+			ctx.rect({0, 0, SW, SH});
 			
       // player
       jgui::jpoint_t<float>
@@ -488,9 +488,9 @@ class Asteroids : public Atari {
 			  ctx.color(0x04);
       }
 
-			ctx.line(p0.x, p0.y, p1.x, p1.y);
-			ctx.line(p1.x, p1.y, p2.x, p2.y);
-			ctx.line(p2.x, p2.y, p0.x, p0.y);
+			ctx.line(p0, p1);
+			ctx.line(p1, p2);
+			ctx.line(p2, p0);
 
 			// asteroids
 			ctx.color(0x01);
@@ -509,7 +509,7 @@ class Asteroids : public Atari {
 						p1 {(int)(t.pos.x + (ASTEROID_SIZE/t.level + t.vertices[k])*cosf(angle)), (int)(t.pos.y + (ASTEROID_SIZE/t.level + t.vertices[k])*sinf(angle))};
 
 					if (j != 0) {
-						ctx.line(p0.x, p0.y, p1.x, p1.y);
+						ctx.line(p0, p1);
 					}
 
 					p0 = p1;
@@ -520,13 +520,13 @@ class Asteroids : public Atari {
       ctx.color(0x0f);
 
       for (auto &t : _fires) {
-        ctx.pixel(t.pos.x, t.pos.y);
+        ctx.pixel(t.pos);
       }
 
 			// INFO:: draw score
 			ctx.color(0x02);
 			ctx.fill(true);
-			ctx.rect(0, 12, SW, 8);
+			ctx.rect({0, 12, SW, 8});
       
 			int x = (SW - 16 - 1)/2;
 

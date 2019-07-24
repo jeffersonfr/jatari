@@ -97,26 +97,26 @@ class context {
       _fill = b;
     }
 
-    void line(int x0, int y0, int x1, int y1)
+    void line(jgui::jpoint_t<int> p0, jgui::jpoint_t<int> p1)
     {
-      _raster.DrawLine({x0, y0}, {x1, y1});
+      _raster.DrawLine(p0, p1);
     }
 
-    void rect(int x, int y, int w, int h)
+    void rect(jgui::jrect_t<int> rect)
     {
       if (_fill == false) {
-        _raster.DrawRectangle(jgui::jrect_t<int>{x, y, w, h});
+        _raster.DrawRectangle(rect);
       } else {
-        _raster.FillRectangle(jgui::jrect_t<int>{x, y, w, h});
+        _raster.FillRectangle(rect);
       }
     }
 
-    void arc(int x, int y, int rad, float ang0, float ang1)
+    void arc(jgui::jpoint_t<int> point, int radius, float ang0, float ang1)
     {
       if (_fill == false) {
-        _raster.DrawArc({x, y}, {rad, rad}, (float)ang0, (float)ang1);
+        _raster.DrawArc(point, {radius, radius}, (float)ang0, (float)ang1);
       } else {
-        _raster.FillArc({x, y}, {rad, rad}, (float)ang0, (float)ang1);
+        _raster.FillArc(point, {radius, radius}, (float)ang0, (float)ang1);
       }
     }
 
@@ -125,9 +125,9 @@ class context {
       _palette = pal;
     }
 
-    void pixel(int x, int y)
+    void pixel(jgui::jpoint_t<int> point)
     {
-      _raster.SetPixel({x, y});
+      _raster.SetPixel(point);
     }
 
     void color(uint8_t index)
@@ -149,7 +149,7 @@ class context {
 
             if (c != 0) {
               color(c);
-              pixel(region.point.x + i, region.point.y + j);
+              pixel({region.point.x + i, region.point.y + j});
             }
           }
         }
@@ -160,7 +160,7 @@ class context {
 
             if (c != 0) {
               color(c);
-              pixel(region.point.x + i, region.point.y + j);
+              pixel({region.point.x + i, region.point.y + j});
             }
           }
         }
@@ -171,7 +171,7 @@ class context {
 
             if (c != 0) {
               color(c);
-              pixel(region.point.x + i, region.point.y + j);
+              pixel({region.point.x + i, region.point.y + j});
             }
           }
         }
@@ -190,7 +190,7 @@ class context {
 
             if (c != 0) {
               color(c);
-              pixel(region.point.x + i, region.point.y + j);
+              pixel({region.point.x + i, region.point.y + j});
             }
           }
         }

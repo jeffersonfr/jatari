@@ -466,13 +466,13 @@ class Frogger : public Atari {
 
 			// background
 			ctx.color(2);
-			ctx.rect(0x00, 0x00, SW, SH);
+			ctx.rect({0, 0, SW, SH});
 
 			// sidewalk
 			ctx.color(6);
-			ctx.rect(_block.width, 1*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 7*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 13*_block.height, SW - 2*_block.width, _block.height);
+			ctx.rect({_block.width, 1*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 7*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 13*_block.height, SW - 2*_block.width, _block.height});
 
 			// houses
 			int x = (SW - 2*_block.width)/9;
@@ -482,7 +482,7 @@ class Frogger : public Atari {
 
 				if ((i%2) == 0) {
 					ctx.color(1);
-					ctx.rect(i*x + _block.width, 1*_block.height, x, _block.height);
+					ctx.rect({i*x + _block.width, 1*_block.height, x, _block.height});
 
 					if (_houses[i/2] == true) {
 						ctx.sprite(frogger_house.data, {i*x + _block.width + (x - 8)/2, _block.height + (_block.height - 11)/2, 8, 11});
@@ -492,19 +492,19 @@ class Frogger : public Atari {
 
 			// lake
 			ctx.color(1);
-			ctx.rect(_block.width, 2*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 3*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 4*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 5*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 6*_block.height, SW - 2*_block.width, _block.height);
+			ctx.rect({_block.width, 2*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 3*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 4*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 5*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 6*_block.height, SW - 2*_block.width, _block.height});
 
 			// road
 			ctx.color(0);
-			ctx.rect(_block.width, 8*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 9*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 10*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 11*_block.height, SW - 2*_block.width, _block.height);
-			ctx.rect(_block.width, 12*_block.height, SW - 2*_block.width, _block.height);
+			ctx.rect({_block.width, 8*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 9*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 10*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 11*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.width, 12*_block.height, SW - 2*_block.width, _block.height});
 
 			for (auto &object : _objects) {
         if (_velocity[(int)object.pos.y] < 0) {
@@ -639,15 +639,15 @@ class Frogger : public Atari {
 
       // sides
       ctx.color(2);
-      ctx.rect(0, 0, _block.width, SH);
-      ctx.rect(SW - _block.width, 0, _block.width, SH);
+      ctx.rect({0, 0, _block.width, SH});
+      ctx.rect({SW - _block.width, 0, _block.width, SH});
       
       ctx.fill(true);
       ctx.color(0x0f);
 
       // lives
       for (int i=0; i<_lives; i++) {
-        ctx.rect(_block.width + i*(4 + 2), (int)(14*_block.height + 4), 4, 5);
+        ctx.rect({_block.width + i*(4 + 2), (int)(14*_block.height + 4), 4, 5});
       }
       
       ctx.color(0x00);
@@ -664,7 +664,7 @@ class Frogger : public Atari {
 
       int length = 3*_timeout/100;
 
-      ctx.rect(SW - _block.width - length, (int)(14*_block.height + 4), length, 5);
+      ctx.rect({SW - _block.width - length, (int)(14*_block.height + 4), length, 5});
 
 			if (_frogger.alive == false and alive == true) {
 				_lives = _lives - 1;
