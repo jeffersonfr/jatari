@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.0)
 
 include_directories(
   "${CMAKE_SOURCE_DIR}/include"
-  ${jlibcpp_INCLUDE_DIRS}
+  ${JLIBCPP_INCLUDE_DIRS}
 )
 
 macro(game)
@@ -10,7 +10,7 @@ macro(game)
     ${ARGV0}.cpp
   )
 target_link_libraries(${ARGV0}
-    ${jlibcpp_LIBRARIES}
+    ${JLIBCPP_LIBRARIES}
   )
 endmacro()
 

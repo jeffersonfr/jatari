@@ -520,7 +520,7 @@ class Asteroids : public Atari {
       ctx.color(0x0f);
 
       for (auto &t : _fires) {
-        ctx.arc(t.pos.x, t.pos.y, 1, 0.0f, 2.0f*M_PI);
+        ctx.pixel(t.pos.x, t.pos.y);
       }
 
 			// INFO:: draw score
