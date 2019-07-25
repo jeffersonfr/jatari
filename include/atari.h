@@ -196,6 +196,39 @@ class context {
         }
       }
     }
+    
+    void sprite(uint8_t obj[], jgui::jrect_t<int> region, float angle)
+    {
+      angle = fmod(angle, 2*M_PI);
+
+      int 
+        precision = 1024,
+        sinTheta = (int)(precision*sin(angle)),
+        cosTheta = (int)(precision*cos(angle)),
+        iw = (abs(region.size.width*cosTheta)+abs(region.size.height*sinTheta))/precision,
+        ih = (abs(region.size.width*sinTheta)+abs(region.size.height*cosTheta))/precision;
+      int 
+        sxc = region.size.width/2,
+        syc = region.size.height/2,
+        dxc = iw/2,
+        dyc = ih/2,
+        xo, yo, t1, t2;
+
+      for (int j=0; j<ih; j++) {
+        t1 = (j - dyc)*sinTheta;
+        t2 = (j - dyc)*cosTheta;
+
+        for (int i=0; i<iw; i++) {
+          xo = ((i - dxc)*cosTheta - t1)/precision;
+          yo = ((i - dxc)*sinTheta + t2)/precision;
+
+          if (xo >= -sxc && xo <= sxc && yo >= -syc && yo <= syc) {
+            color(obj[(yo + syc)*region.size.width + (xo + sxc)]);
+            pixel({i + region.point.x, j + region.point.y});
+          }
+        }
+      }
+    }
 
 };
 
