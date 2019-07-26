@@ -322,9 +322,10 @@ class Tank : public Atari {
           fire.alive = false;
         }
 
-        if (collide({fire.pos, 1, 1}, {_player1.pos - jgui::jpoint_t<int>{4, 4}, 8, 8}) == true) {
+        if (_player1.health > 0 and collide({fire.pos, 1, 1}, {_player1.pos - jgui::jpoint_t<int>{4, 4}, 8, 8}) == true) {
           _player0.score = _player0.score + 1;
           _player1.health = _player1.health - 10;
+
           fire.alive = false;
         }
       }
@@ -408,10 +409,13 @@ class Tank : public Atari {
 			ctx.rect({0, 0, SW, SH});
 		  
       // INFO:: draw players
-			ctx.color(0x01);
-      ctx.sprite(tank.data, {_player0.pos + jgui::jpoint_t<int>{_offset.left - tank.size.width/2, _offset.top - tank.size.height/2}, tank.size}, _player0.angle*ANGLE_MULTIPLY);
-			ctx.color(0x04);
-      ctx.sprite(tank.data, {_player1.pos + jgui::jpoint_t<int>{_offset.left - tank.size.width/2, _offset.top - tank.size.height/2}, tank.size}, _player1.angle*ANGLE_MULTIPLY);
+			if (_player0.health > 0) {
+      	ctx.sprite(tank.data, {_player0.pos + jgui::jpoint_t<int>{_offset.left - tank.size.width/2, _offset.top - tank.size.height/2}, tank.size}, _player0.angle*ANGLE_MULTIPLY);
+			}
+
+			if (_player1.health > 0) {
+      	ctx.sprite(tank.data, {_player1.pos + jgui::jpoint_t<int>{_offset.left - tank.size.width/2, _offset.top - tank.size.height/2}, tank.size}, _player1.angle*ANGLE_MULTIPLY);
+			}
 
       // INFO:: draw map
       for (int j=0; j<ROWS; j++) {
