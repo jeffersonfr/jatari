@@ -24,9 +24,6 @@
 #define ASTEROID_VERTICES 16
 #define ASTEROID_SIZE 8
 
-// INFO:: ship definitions
-#define SHIP_SIZE 6
-
 uint8_t numbers[10][8*16] = {
   { // 0
     0x00, 0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x00, 0x00,
@@ -209,6 +206,28 @@ uint8_t numbers[10][8*16] = {
     0x00, 0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x00, 0x00
   }
 };
+
+struct sprite_t {
+  jgui::jsize_t<int> size;
+  uint8_t data[];
+} ship = {
+    .size = {
+      8, 11
+    },
+    .data = {
+      0x00, 0x0f, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x0f, 0x0f, 0x0f, 0x00, 0x00, 0x00, 0x00,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00, 0x00, 0x00,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00, 0x00,
+      0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00,
+      0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+      0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00, 0x00,
+      0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x00, 0x00, 0x00,
+      0x00, 0x0f, 0x0f, 0x0f, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x0f, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00
+    },
+  };
 
 struct asteroid_t {
 	jgui::jpoint_t<float> pos;
@@ -396,7 +415,7 @@ class Asteroids : public Atari {
 			}
 
 			for (auto &asteroid : _asteroids) {
-        if (_game_over == false and _player.pos.Distance(asteroid.pos) < (ASTEROID_SIZE/asteroid.level + SHIP_SIZE)) {
+        if (_game_over == false and _player.pos.Distance(asteroid.pos) < (ASTEROID_SIZE/asteroid.level + ship.size.width/2)) {
           colide_ship();
 
           _player.vel = 0.0f;
@@ -473,24 +492,7 @@ class Asteroids : public Atari {
 			ctx.rect({0, 0, SW, SH});
 			
       // player
-      jgui::jpoint_t<float>
-        p0 {SHIP_SIZE, 0},
-			  p1 {-SHIP_SIZE/2, SHIP_SIZE/2},
-			  p2 {-SHIP_SIZE/2, -SHIP_SIZE/2};
-
-      p0 = p0.Rotate(_player.angle) + _player.pos;
-      p1 = p1.Rotate(_player.angle) + _player.pos;
-      p2 = p2.Rotate(_player.angle) + _player.pos;
-
-			ctx.color(0x0f);
-
-      if (_game_over == true) {
-			  ctx.color(0x04);
-      }
-
-			ctx.line(p0, p1);
-			ctx.line(p1, p2);
-			ctx.line(p2, p0);
+      ctx.sprite(ship.data, {_player.pos - jgui::jpoint_t<int>{ship.size.width/2, ship.size.height/2}, ship.size}, -_player.angle);
 
 			// asteroids
 			ctx.color(0x01);
@@ -524,7 +526,7 @@ class Asteroids : public Atari {
       }
 
 			// INFO:: draw score
-			ctx.color(0x02);
+			ctx.color(0x0f);
 			ctx.fill(true);
 			ctx.rect({0, 12, SW, 8});
       

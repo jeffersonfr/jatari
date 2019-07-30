@@ -366,7 +366,7 @@ class Tank : public Atari {
 
         if (flag == false) {
           // INFO:: tanks collision
-          if ((_player0.pos - _player1.pos).EuclidianNorm() > 9) {
+          if (_player1.health <= 0 or (_player0.pos - _player1.pos).EuclidianNorm() > 8) {
             _player0.pos = pos;
           }
         }
