@@ -526,7 +526,7 @@ class Asteroids : public Atari {
       }
 
 			// INFO:: draw score
-			ctx.color(0x0f);
+			ctx.color(0x02);
 			ctx.fill(true);
 			ctx.rect({0, 12, SW, 8});
       

@@ -31,23 +31,29 @@
 static const int SW = 160;
 static const int SH = 192;
 
-uint32_t jpalette_t[] = {
-  0xff000000, // 00. black
-  0xff00008f, // 01. blue
-  0xff008f00, // 02. green
-  0xff008f8f, // 03. cyan
-  0xff8f0000, // 04. red
-  0xff8f008f, // 05. magenta
-  0xff8f8f00, // 06. brown
-  0xffcfcfcf, // 07. light gray
-  0xff8f8f8f, // 08. dark gray
-  0xff0000ff, // 09. light blue
-  0xff00ff00, // 10. light green
-  0xff00ffff, // 11. light cyan
-  0xffff0000, // 12. light red
-  0xffff00ff, // 13. light magenta
-  0xffffff00, // 14. yellow
-  0xffffffff, // 15. white
+struct jpalette_t {
+  size_t size;
+  uint32_t colors[];
+} jatari_palette = {
+  .size = 15,
+  .colors = {
+    0xff000000, // 00. black
+    0xff00008f, // 01. blue
+    0xff008f00, // 02. green
+    0xff008f8f, // 03. cyan
+    0xff8f0000, // 04. red
+    0xff8f008f, // 05. magenta
+    0xff8f8f00, // 06. brown
+    0xffcfcfcf, // 07. light gray
+    0xff8f8f8f, // 08. dark gray
+    0xff0000ff, // 09. light blue
+    0xff00ff00, // 10. light green
+    0xff00ffff, // 11. light cyan
+    0xffff0000, // 12. light red
+    0xffff00ff, // 13. light magenta
+    0xffffff00, // 14. yellow
+    0xffffffff // 15. white
+  }
 };
 
 enum jatari_key_t {
@@ -73,7 +79,7 @@ class context {
   private:
     jgui::Raster
       _raster;
-    uint32_t 
+    jpalette_t
       *_palette;
     jatari_blit_t
       _blit;
@@ -85,7 +91,7 @@ class context {
       _raster((uint32_t *)cairo_image_surface_get_data(g->GetCairoSurface()), jgui::jsize_t<int>{SW, SH})
     {
       _fill = false;
-      _palette = jpalette_t;
+      _palette = &jatari_palette;
     }
 
     virtual ~context()
@@ -120,9 +126,9 @@ class context {
       }
     }
 
-    void palette(uint32_t *pal)
+    void palette(jpalette_t *palette)
     {
-      _palette = pal;
+      _palette = palette;
     }
 
     void pixel(jgui::jpoint_t<int> point)
@@ -132,7 +138,11 @@ class context {
 
     void color(uint8_t index)
     {
-      _raster.SetColor(_palette[index]);
+      if (index > _palette->size) {
+        return;
+      }
+
+      _raster.SetColor(_palette->colors[index]);
     }
 
     void blit(jatari_blit_t blit)
@@ -272,7 +282,7 @@ class Atari : public jgui::Window {
 
   public:
     Atari():
-      jgui::Window(0, 0, 640, 480)
+      jgui::Window({640, 480})
     {
       _screen = new jgui::BufferedImage(jgui::JPF_RGB32, {SW, SH});
     }
