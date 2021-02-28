@@ -17,11 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "jgui/japplication.h"
-#include "jgui/jwindow.h"
-#include "jgui/jbufferedimage.h"
-#include "jgui/jraster.h"
-#include "jmath/jmath.h"
+#include "jcanvas/core/japplication.h"
+#include "jcanvas/core/jwindow.h"
+#include "jcanvas/core/jbufferedimage.h"
+#include "jcanvas/core/jraster.h"
 
 #include <iostream>
 #include <string>
@@ -77,7 +76,7 @@ enum jatari_blit_t {
 class context {
 
   private:
-    jgui::Raster
+    jcanvas::Raster
       _raster;
     jpalette_t
       *_palette;
@@ -87,8 +86,8 @@ class context {
       _fill;
 
   public:
-    context(jgui::Graphics *g):
-      _raster((uint32_t *)cairo_image_surface_get_data(g->GetCairoSurface()), jgui::jsize_t<int>{SW, SH})
+    context(jcanvas::Graphics *g):
+      _raster((uint32_t *)cairo_image_surface_get_data(g->GetCairoSurface()), jcanvas::jpoint_t<int>{SW, SH})
     {
       _fill = false;
       _palette = &jatari_palette;
@@ -103,12 +102,12 @@ class context {
       _fill = b;
     }
 
-    void line(jgui::jpoint_t<int> p0, jgui::jpoint_t<int> p1)
+    void line(jcanvas::jpoint_t<int> p0, jcanvas::jpoint_t<int> p1)
     {
       _raster.DrawLine(p0, p1);
     }
 
-    void rect(jgui::jrect_t<int> rect)
+    void rect(jcanvas::jrect_t<int> rect)
     {
       if (_fill == false) {
         _raster.DrawRectangle(rect);
@@ -117,7 +116,7 @@ class context {
       }
     }
 
-    void arc(jgui::jpoint_t<int> point, int radius, float ang0, float ang1)
+    void arc(jcanvas::jpoint_t<int> point, int radius, float ang0, float ang1)
     {
       if (_fill == false) {
         _raster.DrawArc(point, {radius, radius}, (float)ang0, (float)ang1);
@@ -131,7 +130,7 @@ class context {
       _palette = palette;
     }
 
-    void pixel(jgui::jpoint_t<int> point)
+    void pixel(jcanvas::jpoint_t<int> point)
     {
       _raster.SetPixel(point);
     }
@@ -150,12 +149,12 @@ class context {
       _blit = blit;
     }
 
-    void sprite(uint8_t obj[], jgui::jrect_t<int> region)
+    void sprite(uint8_t obj[], jcanvas::jrect_t<int> region)
     {
       if (_blit == BLIT_ROTATE_90) {
-        for (int j=0; j<region.size.width; j++) {
-          for (int i=0; i<region.size.height; i++) {
-            int c = obj[i*region.size.width + (region.size.width - j - 1)];
+        for (int j=0; j<region.size.x; j++) {
+          for (int i=0; i<region.size.y; i++) {
+            int c = obj[i*region.size.x + (region.size.x - j - 1)];
 
             if (c != 0) {
               color(c);
@@ -164,9 +163,9 @@ class context {
           }
         }
       } else if (_blit == BLIT_ROTATE_180) {
-        for (int j=0; j<region.size.height; j++) {
-          for (int i=0; i<region.size.width; i++) {
-            int c = obj[(region.size.height - j - 1)*region.size.width + (region.size.width - i - 1)];
+        for (int j=0; j<region.size.y; j++) {
+          for (int i=0; i<region.size.x; i++) {
+            int c = obj[(region.size.y - j - 1)*region.size.x + (region.size.x - i - 1)];
 
             if (c != 0) {
               color(c);
@@ -175,9 +174,9 @@ class context {
           }
         }
       } else if (_blit == BLIT_ROTATE_270) {
-        for (int j=0; j<region.size.width; j++) {
-          for (int i=0; i<region.size.height; i++) {
-            int c = obj[(region.size.height - i - 1)*region.size.width + j];
+        for (int j=0; j<region.size.x; j++) {
+          for (int i=0; i<region.size.y; i++) {
+            int c = obj[(region.size.y - i - 1)*region.size.x + j];
 
             if (c != 0) {
               color(c);
@@ -186,14 +185,14 @@ class context {
           }
         }
       } else {
-        for (int j=0; j<region.size.height; j++) {
-          for (int i=0; i<region.size.width; i++) {
-            int k = j*region.size.width + i;
+        for (int j=0; j<region.size.y; j++) {
+          for (int i=0; i<region.size.x; i++) {
+            int k = j*region.size.x + i;
 
             if (_blit == BLIT_FLIP_HORIZONTAL) {
-              k = j*region.size.width + (region.size.width - i - 1);
+              k = j*region.size.x + (region.size.x - i - 1);
             } else if (_blit == BLIT_FLIP_VERTICAL) {
-              k = (region.size.height - j - 1)*region.size.width + i;
+              k = (region.size.y - j - 1)*region.size.x + i;
             }
 
             int c = obj[k];
@@ -207,14 +206,14 @@ class context {
       }
     }
     
-    void sprite(uint8_t obj[], jgui::jrect_t<int> region, float angle)
+    void sprite(uint8_t obj[], jcanvas::jrect_t<int> region, float angle)
     {
       float
         sinTheta = sinf(angle),
         cosTheta = cosf(angle);
       int 
-        iw = region.size.width,
-        ih = region.size.height;
+        iw = region.size.x,
+        ih = region.size.y;
 
       for (int j=0; j<ih; j++) {
         for (int i=0; i<iw; i++) {
@@ -226,19 +225,19 @@ class context {
 						ry = px*sinTheta + py*cosTheta;
 
           color(obj[j*iw + i]);
-          pixel(jgui::jpoint_t<float>{roundf(region.point.x + rx + iw/2.0f), roundf(region.point.y - ry + ih/2.0f)});
+          pixel(jcanvas::jpoint_t<float>{roundf(region.point.x + rx + iw/2.0f), roundf(region.point.y - ry + ih/2.0f)});
         }
       }
     }
 
 };
 
-class Atari : public jgui::Window {
+class Atari : public jcanvas::Window {
 
   private:
     std::chrono::time_point<std::chrono::steady_clock> 
       _start_time = std::chrono::steady_clock::now();
-    jgui::Image 
+    jcanvas::Image 
       *_screen;
 
   private:
@@ -257,7 +256,7 @@ class Atari : public jgui::Window {
       std::this_thread::sleep_for(diff);
     }
 
-    virtual void Paint(jgui::Graphics *g)
+    virtual void Paint(jcanvas::Graphics *g)
     {
       std::chrono::milliseconds 
         diff = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _start_time);
@@ -267,12 +266,12 @@ class Atari : public jgui::Window {
       loop(diff.count());
       draw(ctx);
 
-      _screen->GetGraphics()->SetAntialias(jgui::JAM_NONE);
+      _screen->GetGraphics()->SetAntialias(jcanvas::JAM_NONE);
 
-      jgui::Image 
+      jcanvas::Image 
         *scaled = _screen->Scale(GetSize());
 
-      g->DrawImage(scaled, jgui::jpoint_t<int>{0, 0});
+      g->DrawImage(scaled, jcanvas::jpoint_t<int>{0, 0});
 
       delete scaled;
 
@@ -282,9 +281,9 @@ class Atari : public jgui::Window {
 
   public:
     Atari():
-      jgui::Window({640, 480})
+      jcanvas::Window({640, 480})
     {
-      _screen = new jgui::BufferedImage(jgui::JPF_RGB32, {SW, SH});
+      _screen = new jcanvas::BufferedImage(jcanvas::JPF_RGB32, {SW, SH});
     }
 
     virtual ~Atari()
@@ -293,12 +292,12 @@ class Atari : public jgui::Window {
       _screen = nullptr;
     }
 
-    void viewport(jgui::jsize_t<int> size)
+    void viewport(jcanvas::jpoint_t<int> size)
     {
       SetSize(size);
     }
 
-    jgui::jsize_t<int> size()
+    jcanvas::jpoint_t<int> size()
     {
       return {SW, SH};
     }
@@ -313,26 +312,26 @@ class Atari : public jgui::Window {
 
     bool key(jatari_key_t k)
     {
-      jgui::EventManager *ev = GetEventManager();
+      jcanvas::EventManager *ev = GetEventManager();
 
       if (k == KEY_LEFT) {
-        return (ev->IsKeyDown(jevent::JKS_CURSOR_LEFT));
+        return (ev->IsKeyDown(jcanvas::JKS_CURSOR_LEFT));
       } else if (k == KEY_RIGHT) {
-        return (ev->IsKeyDown(jevent::JKS_CURSOR_RIGHT));
+        return (ev->IsKeyDown(jcanvas::JKS_CURSOR_RIGHT));
       } else if (k == KEY_UP) {
-        return (ev->IsKeyDown(jevent::JKS_CURSOR_UP));
+        return (ev->IsKeyDown(jcanvas::JKS_CURSOR_UP));
       } else if (k == KEY_DOWN) {
-        return (ev->IsKeyDown(jevent::JKS_CURSOR_DOWN));
+        return (ev->IsKeyDown(jcanvas::JKS_CURSOR_DOWN));
       } else if (k == KEY_ACTION) {
-        return (ev->IsKeyDown(jevent::JKS_SPACE));
+        return (ev->IsKeyDown(jcanvas::JKS_SPACE));
       }
 
       return false;
     }
 
-    bool collide(jgui::jrect_t<int> r1, jgui::jrect_t<int> r2)
+    bool collide(jcanvas::jrect_t<int> r1, jcanvas::jrect_t<int> r2)
     {
-      if ((r1.point.x + r1.size.width) >= r2.point.x && r1.point.x <= (r2.point.x + r2.size.width) && (r1.point.y + r1.size.height) >= r2.point.y && r1.point.y <= (r2.point.y + r2.size.height)) {
+      if ((r1.point.x + r1.size.x) >= r2.point.x && r1.point.x <= (r2.point.x + r2.size.x) && (r1.point.y + r1.size.y) >= r2.point.y && r1.point.y <= (r2.point.y + r2.size.y)) {
         return true;
       }
 

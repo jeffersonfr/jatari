@@ -208,7 +208,7 @@ uint8_t numbers[10][8*16] = {
 };
 
 struct sprite_t {
-  jgui::jsize_t<int> size;
+  jcanvas::jpoint_t<int> size;
   uint8_t data[];
 } ship = {
     .size = {
@@ -230,8 +230,8 @@ struct sprite_t {
   };
 
 struct asteroid_t {
-	jgui::jpoint_t<float> pos;
-	jgui::jpoint_t<float> dir;
+	jcanvas::jpoint_t<float> pos;
+	jcanvas::jpoint_t<float> dir;
 	std::vector<int> vertices;
   float angle;
 	int level;
@@ -239,15 +239,15 @@ struct asteroid_t {
 };
 
 struct player_t {
-	jgui::jpoint_t<float> pos;
+	jcanvas::jpoint_t<float> pos;
 	float angle;
 	float vel;
 	int fire = 0;
 };
 
 struct fire_t {
-  jgui::jpoint_t<float> pos;
-  jgui::jpoint_t<float> dir;
+  jcanvas::jpoint_t<float> pos;
+  jcanvas::jpoint_t<float> dir;
   bool alive;
 };
 
@@ -277,10 +277,10 @@ class Asteroids : public Atari {
 			};
 
 			for (int i=0; i<ASTEROIDS; i++) {
-				jgui::jpoint_t<int> 
+				jcanvas::jpoint_t<int> 
 					pos {(int)(random()%SW), (int)(random()%SH)};
 
-				if (pos.Distance(jgui::jpoint_t<int>{SW/2, SH/2}) < 32) {
+				if (pos.Distance(jcanvas::jpoint_t<int>{SW/2, SH/2}) < 32) {
 					i = i - 1;
 
 					continue;
@@ -294,7 +294,7 @@ class Asteroids : public Atari {
 					};
 
 				do {
-					t.dir = jgui::jpoint_t<int>{(int)(random()%3 - 1), (int)(random()%3 - 1)};
+					t.dir = jcanvas::jpoint_t<int>{(int)(random()%3 - 1), (int)(random()%3 - 1)};
 				} while (t.dir.x == 0 and t.dir.y == 0);
 
 				t.level = 1;
@@ -415,7 +415,7 @@ class Asteroids : public Atari {
 			}
 
 			for (auto &asteroid : _asteroids) {
-        if (_game_over == false and _player.pos.Distance(asteroid.pos) < (ASTEROID_SIZE/asteroid.level + ship.size.width/2)) {
+        if (_game_over == false and _player.pos.Distance(asteroid.pos) < (ASTEROID_SIZE/asteroid.level + ship.size.x/2)) {
           colide_ship();
 
           _player.vel = 0.0f;
@@ -446,7 +446,7 @@ class Asteroids : public Atari {
                 };
 
               do {
-                t.dir = jgui::jpoint_t<int>{(int)(random()%3 - 1), (int)(random()%3 - 1)};
+                t.dir = jcanvas::jpoint_t<int>{(int)(random()%3 - 1), (int)(random()%3 - 1)};
               } while (t.dir.x == 0 and t.dir.y == 0);
 
               t.level = 2;
@@ -492,13 +492,13 @@ class Asteroids : public Atari {
 			ctx.rect({0, 0, SW, SH});
 			
       // player
-      ctx.sprite(ship.data, {_player.pos - jgui::jpoint_t<int>{ship.size.width/2, ship.size.height/2}, ship.size}, -_player.angle);
+      ctx.sprite(ship.data, {_player.pos - jcanvas::jpoint_t<int>{ship.size.x/2, ship.size.y/2}, ship.size}, -_player.angle);
 
 			// asteroids
 			ctx.color(0x01);
 
 			for (auto &t : _asteroids) {
-				jgui::jpoint_t<int> 
+				jcanvas::jpoint_t<int> 
 					p0;
 
 				for (int j=0; j<=t.vertices.size(); j++) {
@@ -507,7 +507,7 @@ class Asteroids : public Atari {
 					float 
 						angle = k*2.0f*M_PI/t.vertices.size() + t.angle;
 
-					jgui::jpoint_t<int> 
+					jcanvas::jpoint_t<int> 
 						p1 {(int)(t.pos.x + (ASTEROID_SIZE/t.level + t.vertices[k])*cosf(angle)), (int)(t.pos.y + (ASTEROID_SIZE/t.level + t.vertices[k])*sinf(angle))};
 
 					if (j != 0) {
@@ -540,11 +540,11 @@ class Asteroids : public Atari {
 
 int main(int argc, char **argv)
 {
-	jgui::Application::Init(argc, argv);
+	jcanvas::Application::Init(argc, argv);
 
 	Asteroids app;
 
-	jgui::Application::Loop();
+	jcanvas::Application::Loop();
 
 	return 0;
 }

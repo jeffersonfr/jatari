@@ -24,7 +24,7 @@
 #define KEYDELAY -3
 
 struct sprite_t {
-  jgui::jsize_t<int> size;
+  jcanvas::jpoint_t<int> size;
   uint8_t data[];
 } truck = {
     .size = {
@@ -175,12 +175,12 @@ struct sprite_t {
 
 struct object_t {
   struct sprite_t *sprite;
-  jgui::jpoint_t<float> pos;
+  jcanvas::jpoint_t<float> pos;
 };
 
 struct frogger_t {
   struct sprite_t *sprite;
-  jgui::jpoint_t<float> pos;
+  jcanvas::jpoint_t<float> pos;
   bool alive;
 };
 
@@ -189,16 +189,16 @@ class Frogger : public Atari {
   private:
     std::vector<struct object_t>
       _objects;
-    jgui::jsize_t<int>
+    jcanvas::jpoint_t<int>
       _block {
-        .width = 8, 
-        .height = 12
+        .x = 8, 
+        .y = 12
       };
     struct frogger_t
       _frogger {
         .sprite = &frogger,
         .pos = {
-          .x = (SW - frogger.size.width)/2.0f, 
+          .x = (SW - frogger.size.x)/2.0f, 
           .y = 13
         },
         .alive = true,
@@ -238,14 +238,14 @@ class Frogger : public Atari {
       _objects.push_back({
           .sprite = &aligator,
           .pos = {
-            .x = 0.0f*aligator.size.width,
+            .x = 0.0f*aligator.size.x,
             .y = 2
           }
       });
       _objects.push_back({
           .sprite = &aligator,
           .pos = {
-            .x = 3.0f*aligator.size.width,
+            .x = 3.0f*aligator.size.x,
             .y = 2
           }
       });
@@ -253,21 +253,21 @@ class Frogger : public Atari {
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
-            .x = 0*turtle.size.width,
+            .x = 0*turtle.size.x,
             .y = 3
           }
       });
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
-            .x = 2.0f*turtle.size.width,
+            .x = 2.0f*turtle.size.x,
             .y = 3
           }
       });
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
-            .x = 4.0f*turtle.size.width,
+            .x = 4.0f*turtle.size.x,
             .y = 3
           }
       });
@@ -275,21 +275,21 @@ class Frogger : public Atari {
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
-            .x = 0.0f*trunk.size.width,
+            .x = 0.0f*trunk.size.x,
             .y = 4
           }
       });
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
-            .x = 1.0f*trunk.size.width,
+            .x = 1.0f*trunk.size.x,
             .y = 4
           }
       });
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
-            .x = 2.0f*trunk.size.width,
+            .x = 2.0f*trunk.size.x,
             .y = 4
           }
       });
@@ -298,21 +298,21 @@ class Frogger : public Atari {
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
-            .x = 0.0f*trunk.size.width,
+            .x = 0.0f*trunk.size.x,
             .y = 5
           }
       });
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
-            .x = 2.0f*trunk.size.width,
+            .x = 2.0f*trunk.size.x,
             .y = 5
           }
       });
       _objects.push_back({
           .sprite = &trunk,
           .pos = {
-            .x = 4.0f*trunk.size.width,
+            .x = 4.0f*trunk.size.x,
             .y = 5
           }
       });
@@ -321,21 +321,21 @@ class Frogger : public Atari {
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
-            .x = 0.0f*turtle.size.width,
+            .x = 0.0f*turtle.size.x,
             .y = 6
           }
       });
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
-            .x = 2.0f*turtle.size.width,
+            .x = 2.0f*turtle.size.x,
             .y = 6
           }
       });
       _objects.push_back({
           .sprite = &turtle,
           .pos = {
-            .x = 4.0f*turtle.size.width,
+            .x = 4.0f*turtle.size.x,
             .y = 6
           }
       });
@@ -366,14 +366,14 @@ class Frogger : public Atari {
       _objects.push_back({
           .sprite = &car_03,
           .pos = {
-            .x = 0.0f*car_03.size.width,
+            .x = 0.0f*car_03.size.x,
             .y = 11
           }
       });
       _objects.push_back({
           .sprite = &car_03,
           .pos = {
-            .x = 2.0f*car_03.size.width,
+            .x = 2.0f*car_03.size.x,
             .y = 11
           }
       });
@@ -381,14 +381,14 @@ class Frogger : public Atari {
       _objects.push_back({
           .sprite = &car_03,
           .pos = {
-            .x = 8.0f*car_03.size.width,
+            .x = 8.0f*car_03.size.x,
             .y = 11
           }
       });
       _objects.push_back({
           .sprite = &car_03,
           .pos = {
-            .x = 10.0f*car_03.size.width,
+            .x = 10.0f*car_03.size.x,
             .y = 11
           }
       });
@@ -408,14 +408,14 @@ class Frogger : public Atari {
     virtual void loop(int64_t timestamp)
     {
       if (_frogger.alive == true) {
-				if (_frogger.pos.x > _block.width and _frogger.pos.x < (SW - _block.width)) {
+				if (_frogger.pos.x > _block.x and _frogger.pos.x < (SW - _block.x)) {
 					if (_delay++ > 0) {
 						if (key(KEY_LEFT)) {
-							_frogger.pos.x = _frogger.pos.x - _block.width/2;
+							_frogger.pos.x = _frogger.pos.x - _block.x/2;
 
 							if (_frogger.pos.y < 2 or _frogger.pos.y > 6) {
-								if (_frogger.pos.x < _block.width) {
-									_frogger.pos.x = _block.width;
+								if (_frogger.pos.x < _block.x) {
+									_frogger.pos.x = _block.x;
 								}
 							}
 
@@ -423,11 +423,11 @@ class Frogger : public Atari {
 						}
 
 						if (key(KEY_RIGHT)) {
-							_frogger.pos.x = _frogger.pos.x + _block.width/2;
+							_frogger.pos.x = _frogger.pos.x + _block.x/2;
 
 							if (_frogger.pos.y < 2 or _frogger.pos.y > 6) {
-								if (_frogger.pos.x > (SW -  _block.width - _frogger.sprite->size.width)) {
-									_frogger.pos.x = SW - _block.width - _frogger.sprite->size.width;
+								if (_frogger.pos.x > (SW -  _block.x - _frogger.sprite->size.x)) {
+									_frogger.pos.x = SW - _block.x - _frogger.sprite->size.x;
 								}
 							}
 
@@ -470,48 +470,48 @@ class Frogger : public Atari {
 
 			// sidewalk
 			ctx.color(6);
-			ctx.rect({_block.width, 1*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 7*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 13*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.x, 1*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 7*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 13*_block.y, SW - 2*_block.x, _block.y});
 
 			// houses
-			int x = (SW - 2*_block.width)/9;
+			int x = (SW - 2*_block.x)/9;
 
 			for (int i=0; i<9; i++) {
 				ctx.color(6);
 
 				if ((i%2) == 0) {
 					ctx.color(1);
-					ctx.rect({i*x + _block.width, 1*_block.height, x, _block.height});
+					ctx.rect({i*x + _block.x, 1*_block.y, x, _block.y});
 
 					if (_houses[i/2] == true) {
-						ctx.sprite(frogger_house.data, {i*x + _block.width + (x - 8)/2, _block.height + (_block.height - 11)/2, 8, 11});
+						ctx.sprite(frogger_house.data, {i*x + _block.x + (x - 8)/2, _block.y + (_block.y - 11)/2, 8, 11});
 					}
 				}
 			}
 
 			// lake
 			ctx.color(1);
-			ctx.rect({_block.width, 2*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 3*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 4*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 5*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 6*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.x, 2*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 3*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 4*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 5*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 6*_block.y, SW - 2*_block.x, _block.y});
 
 			// road
 			ctx.color(0);
-			ctx.rect({_block.width, 8*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 9*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 10*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 11*_block.height, SW - 2*_block.width, _block.height});
-			ctx.rect({_block.width, 12*_block.height, SW - 2*_block.width, _block.height});
+			ctx.rect({_block.x, 8*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 9*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 10*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 11*_block.y, SW - 2*_block.x, _block.y});
+			ctx.rect({_block.x, 12*_block.y, SW - 2*_block.x, _block.y});
 
 			for (auto &object : _objects) {
         if (_velocity[(int)object.pos.y] < 0) {
           ctx.blit(BLIT_FLIP_HORIZONTAL);
         }
 
-				ctx.sprite(object.sprite->data, {(int)object.pos.x, (int)(object.pos.y*_block.height + (_block.height - object.sprite->size.height)/2), object.sprite->size.width, object.sprite->size.height});
+				ctx.sprite(object.sprite->data, {(int)object.pos.x, (int)(object.pos.y*_block.y + (_block.y - object.sprite->size.y)/2), object.sprite->size.x, object.sprite->size.y});
 
         ctx.blit(BLIT_NONE);
 
@@ -522,20 +522,20 @@ class Frogger : public Atari {
             object.pos.x = SW;
           }
         } else {
-          if ((object.pos.x + object.sprite->size.width) > (SW + SBOUNDS)) {
-            object.pos.x = -object.sprite->size.width;
+          if ((object.pos.x + object.sprite->size.x) > (SW + SBOUNDS)) {
+            object.pos.x = -object.sprite->size.x;
           }
         }
       }
 
-      jgui::jrect_t<int> fregion = {
+      jcanvas::jrect_t<int> fregion = {
         .point = {
           .x = (int)_frogger.pos.x,
-          .y = (int)(_frogger.pos.y*_block.height + (_block.height - _frogger.sprite->size.height)/2)
+          .y = (int)(_frogger.pos.y*_block.y + (_block.y - _frogger.sprite->size.y)/2)
         },
         .size = {
-          .width = (int)_frogger.sprite->size.width,
-          .height = (int)_frogger.sprite->size.height
+          .x = (int)_frogger.sprite->size.x,
+          .y = (int)_frogger.sprite->size.y
         }
       };
 
@@ -550,23 +550,23 @@ class Frogger : public Atari {
             _frogger.pos.x = SW;
           }
         } else {
-          if ((_frogger.pos.x + _frogger.sprite->size.width) > (SW + SBOUNDS)) {
-            _frogger.pos.x = -_frogger.sprite->size.width;
+          if ((_frogger.pos.x + _frogger.sprite->size.x) > (SW + SBOUNDS)) {
+            _frogger.pos.x = -_frogger.sprite->size.x;
           }
         }
       }
       
       // colision
-      if (_frogger.alive == true and _frogger.pos.x > _block.width and _frogger.pos.x < (SW - _block.width)) {
+      if (_frogger.alive == true and _frogger.pos.x > _block.x and _frogger.pos.x < (SW - _block.x)) {
         for (auto &object : _objects) {
-          jgui::jrect_t<int> oregion = {
+          jcanvas::jrect_t<int> oregion = {
             .point = {
               .x = (int)object.pos.x,
-              .y = (int)(object.pos.y*_block.height + (_block.height - object.sprite->size.height)/2)
+              .y = (int)(object.pos.y*_block.y + (_block.y - object.sprite->size.y)/2)
             },
             .size = {
-              .width = (int)object.sprite->size.width,
-              .height = (int)object.sprite->size.height
+              .x = (int)object.sprite->size.x,
+              .y = (int)object.sprite->size.y
             }
           };
 
@@ -588,18 +588,18 @@ class Frogger : public Atari {
       
         // houses
         if (_frogger.pos.y == 1) {
-          int x = (SW - 2*_block.width)/9;
+          int x = (SW - 2*_block.x)/9;
           int house = -1;
 
           for (int i=0; i<9; i++) {
-            jgui::jrect_t<int> oregion = {
+            jcanvas::jrect_t<int> oregion = {
               .point = {
-                .x = (int)i*x + _block.width,
-                .y = (int)(_block.height)
+                .x = (int)i*x + _block.x,
+                .y = (int)(_block.y)
               },
               .size = {
-                .width = (int)x,
-                .height = (int)_block.height
+                .x = (int)x,
+                .y = (int)_block.y
               }
             };
 
@@ -627,7 +627,7 @@ class Frogger : public Atari {
               // reset position
 					    _timeout = TIMEOUT;
               _frogger.pos = {
-                .x = (SW - frogger.size.width)/2.0f, 
+                .x = (SW - frogger.size.x)/2.0f, 
                 .y = 13
               };
             } else {
@@ -639,15 +639,15 @@ class Frogger : public Atari {
 
       // sides
       ctx.color(2);
-      ctx.rect({0, 0, _block.width, SH});
-      ctx.rect({SW - _block.width, 0, _block.width, SH});
+      ctx.rect({0, 0, _block.x, SH});
+      ctx.rect({SW - _block.x, 0, _block.x, SH});
       
       ctx.fill(true);
       ctx.color(0x0f);
 
       // lives
       for (int i=0; i<_lives; i++) {
-        ctx.rect({_block.width + i*(4 + 2), (int)(14*_block.height + 4), 4, 5});
+        ctx.rect({_block.x + i*(4 + 2), (int)(14*_block.y + 4), 4, 5});
       }
       
       ctx.color(0x00);
@@ -664,7 +664,7 @@ class Frogger : public Atari {
 
       int length = 3*_timeout/100;
 
-      ctx.rect({SW - _block.width - length, (int)(14*_block.height + 4), length, 5});
+      ctx.rect({SW - _block.x - length, (int)(14*_block.y + 4), length, 5});
 
 			if (_frogger.alive == false and alive == true) {
 				_lives = _lives - 1;
@@ -685,7 +685,7 @@ class Frogger : public Atari {
           _frogger.sprite = &frogger;
           _frogger.alive = true;
 					_frogger.pos = {
-						.x = (SW - frogger.size.width)/2.0f, 
+						.x = (SW - frogger.size.x)/2.0f, 
 						.y = 13
 					};
 				}
@@ -697,11 +697,11 @@ class Frogger : public Atari {
 
 int main(int argc, char **argv)
 {
-	jgui::Application::Init(argc, argv);
+	jcanvas::Application::Init(argc, argv);
 
 	Frogger app;
 
-	jgui::Application::Loop();
+	jcanvas::Application::Loop();
 
 	return 0;
 }

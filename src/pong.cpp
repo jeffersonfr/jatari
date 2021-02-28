@@ -208,10 +208,10 @@ uint8_t numbers[10][8*16] = {
 class Pong : public Atari {
 
   private:
-    jgui::jpoint_t<int> _ball_pos = {SW/2, SH/2};
-    jgui::jpoint_t<int> _ball_vel = {-3, 3};
-    jgui::jpoint_t<int> _player0_pos {3*LIMIT, SH/2 - SIZE/2};
-    jgui::jpoint_t<int> _player1_pos {SW - 3*LIMIT, SH/2 - SIZE/2};
+    jcanvas::jpoint_t<int> _ball_pos = {SW/2, SH/2};
+    jcanvas::jpoint_t<int> _ball_vel = {-3, 3};
+    jcanvas::jpoint_t<int> _player0_pos {3*LIMIT, SH/2 - SIZE/2};
+    jcanvas::jpoint_t<int> _player1_pos {SW - 3*LIMIT, SH/2 - SIZE/2};
     int _player0_score = 0;
     int _player1_score = 0;
     int _delay = 0;
@@ -322,11 +322,11 @@ class Pong : public Atari {
 
 int main(int argc, char **argv)
 {
-	jgui::Application::Init(argc, argv);
+	jcanvas::Application::Init(argc, argv);
 
 	Pong app;
 
-	jgui::Application::Loop();
+	jcanvas::Application::Loop();
 
 	return 0;
 }

@@ -19,6 +19,16 @@
  ***************************************************************************/
 #include "atari.h"
 
+namespace jcanvas {
+  template<typename T>
+    struct jinsets_t {
+      T left;
+      T top;
+      T right;
+      T bottom;
+    };
+}
+
 uint8_t numbers[10][8*16] = {
   { // 0
     0x00, 0x00, 0x0f, 0x0f, 0x0f, 0x0f, 0x00, 0x00,
@@ -230,7 +240,7 @@ uint8_t map[ROWS][COLS] = {
 };
 
 struct sprite_t {
-  jgui::jsize_t<int> size;
+  jcanvas::jpoint_t<int> size;
   uint8_t data[];
 } tank = {
     .size = {
@@ -250,15 +260,15 @@ struct sprite_t {
   };
 
 struct player_t {
-  jgui::jpoint_t<float> pos;
+  jcanvas::jpoint_t<float> pos;
   int angle;
   int score;
   int health;
 };
 
 struct fire_t {
-  jgui::jpoint_t<float> pos;
-  jgui::jpoint_t<float> dir;
+  jcanvas::jpoint_t<float> pos;
+  jcanvas::jpoint_t<float> dir;
   bool alive;
 };
 
@@ -286,7 +296,7 @@ class Tank : public Atari {
         .score = 0,
         .health = 100
       };
-    jgui::jinsets_t<int>
+    jcanvas::jinsets_t<int>
       _offset {
         .left = 5, 
         .top = 32,
@@ -308,7 +318,7 @@ class Tank : public Atari {
 
     virtual void loop(int64_t timestamp)
     {
-      jgui::jsize_t<int>
+      jcanvas::jpoint_t<int>
         canvas {SW - 2*_offset.left, SH - _offset.top - _offset.bottom};
 
       for (auto &fire : _fires) {
@@ -322,7 +332,7 @@ class Tank : public Atari {
           fire.alive = false;
         }
 
-        if (_player1.health > 0 and collide({fire.pos, 1, 1}, {_player1.pos - jgui::jpoint_t<int>{4, 4}, 8, 8}) == true) {
+        if (_player1.health > 0 and collide({fire.pos, 1, 1}, {_player1.pos - jcanvas::jpoint_t<int>{4, 4}, 8, 8}) == true) {
           _player0.score = _player0.score + 1;
           _player1.health = _player1.health - 10;
 
@@ -332,7 +342,7 @@ class Tank : public Atari {
 
       // input events
       if (key(KEY_UP) or key(KEY_DOWN)) {
-        jgui::jpoint_t<float>
+        jcanvas::jpoint_t<float>
           step {
             cosf(_player0.angle*ANGLE_MULTIPLY), -sinf(_player0.angle*ANGLE_MULTIPLY)
           },
@@ -410,11 +420,11 @@ class Tank : public Atari {
 		  
       // INFO:: draw players
 			if (_player0.health > 0) {
-      	ctx.sprite(tank.data, {_player0.pos + jgui::jpoint_t<int>{_offset.left - tank.size.width/2, _offset.top - tank.size.height/2}, tank.size}, _player0.angle*ANGLE_MULTIPLY);
+      	ctx.sprite(tank.data, {_player0.pos + jcanvas::jpoint_t<int>{_offset.left - tank.size.x/2, _offset.top - tank.size.y/2}, tank.size}, _player0.angle*ANGLE_MULTIPLY);
 			}
 
 			if (_player1.health > 0) {
-      	ctx.sprite(tank.data, {_player1.pos + jgui::jpoint_t<int>{_offset.left - tank.size.width/2, _offset.top - tank.size.height/2}, tank.size}, _player1.angle*ANGLE_MULTIPLY);
+      	ctx.sprite(tank.data, {_player1.pos + jcanvas::jpoint_t<int>{_offset.left - tank.size.x/2, _offset.top - tank.size.y/2}, tank.size}, _player1.angle*ANGLE_MULTIPLY);
 			}
 
       // INFO:: draw map
@@ -459,11 +469,11 @@ class Tank : public Atari {
 
 int main(int argc, char **argv)
 {
-	jgui::Application::Init(argc, argv);
+	jcanvas::Application::Init(argc, argv);
 
 	Tank app;
 
-	jgui::Application::Loop();
+	jcanvas::Application::Loop();
 
 	return 0;
 }
