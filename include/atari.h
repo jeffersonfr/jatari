@@ -232,7 +232,7 @@ class context {
 
 };
 
-class Atari : public jcanvas::Window {
+class Atari : public jcanvas::Window, public jcanvas::KeyListener {
 
   private:
     std::chrono::time_point<std::chrono::steady_clock> 
@@ -266,7 +266,7 @@ class Atari : public jcanvas::Window {
       loop(diff.count());
       draw(ctx);
 
-      _screen->GetGraphics()->SetAntialias(jcanvas::JAM_NONE);
+      _screen->GetGraphics()->SetAntialias(jcanvas::jantialias_mode_t::None);
 
       jcanvas::Image 
         *scaled = _screen->Scale(GetSize());
@@ -283,7 +283,7 @@ class Atari : public jcanvas::Window {
     Atari():
       jcanvas::Window({640, 480})
     {
-      _screen = new jcanvas::BufferedImage(jcanvas::JPF_RGB32, {SW, SH});
+      _screen = new jcanvas::BufferedImage(jcanvas::jpixelformat_t::RGB32, {SW, SH});
     }
 
     virtual ~Atari()
@@ -312,18 +312,18 @@ class Atari : public jcanvas::Window {
 
     bool key(jatari_key_t k)
     {
-      jcanvas::EventManager *ev = GetEventManager();
+      jcanvas::EventManager &ev = GetEventManager();
 
       if (k == KEY_LEFT) {
-        return (ev->IsKeyDown(jcanvas::JKS_CURSOR_LEFT));
+        return (ev.IsKeyDown(jcanvas::jkeyevent_symbol_t::CursorLeft));
       } else if (k == KEY_RIGHT) {
-        return (ev->IsKeyDown(jcanvas::JKS_CURSOR_RIGHT));
+        return (ev.IsKeyDown(jcanvas::jkeyevent_symbol_t::CursorRight));
       } else if (k == KEY_UP) {
-        return (ev->IsKeyDown(jcanvas::JKS_CURSOR_UP));
+        return (ev.IsKeyDown(jcanvas::jkeyevent_symbol_t::CursorUp));
       } else if (k == KEY_DOWN) {
-        return (ev->IsKeyDown(jcanvas::JKS_CURSOR_DOWN));
+        return (ev.IsKeyDown(jcanvas::jkeyevent_symbol_t::CursorDown));
       } else if (k == KEY_ACTION) {
-        return (ev->IsKeyDown(jcanvas::JKS_SPACE));
+        return (ev.IsKeyDown(jcanvas::jkeyevent_symbol_t::Space));
       }
 
       return false;
