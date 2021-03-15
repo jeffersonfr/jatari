@@ -237,8 +237,8 @@ class Atari : public jcanvas::Window, public jcanvas::KeyListener {
   private:
     std::chrono::time_point<std::chrono::steady_clock> 
       _start_time = std::chrono::steady_clock::now();
-    jcanvas::Image 
-      *_screen;
+    std::shared_ptr<jcanvas::Image>
+      _screen;
 
   private:
     void Framerate(int fps)
@@ -268,12 +268,10 @@ class Atari : public jcanvas::Window, public jcanvas::KeyListener {
 
       _screen->GetGraphics()->SetAntialias(jcanvas::jantialias_mode_t::None);
 
-      jcanvas::Image 
-        *scaled = _screen->Scale(GetSize());
+      std::shared_ptr<jcanvas::Image>
+        scaled = _screen->Scale(GetSize());
 
       g->DrawImage(scaled, jcanvas::jpoint_t<int>{0, 0});
-
-      delete scaled;
 
       Repaint();
       Framerate(25);
@@ -283,12 +281,11 @@ class Atari : public jcanvas::Window, public jcanvas::KeyListener {
     Atari():
       jcanvas::Window({640, 480})
     {
-      _screen = new jcanvas::BufferedImage(jcanvas::jpixelformat_t::RGB32, {SW, SH});
+      _screen = std::make_shared<jcanvas::BufferedImage>(jcanvas::jpixelformat_t::RGB32, jcanvas::jpoint_t<int>{SW, SH});
     }
 
     virtual ~Atari()
     {
-      delete _screen;
       _screen = nullptr;
     }
 
