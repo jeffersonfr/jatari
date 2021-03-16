@@ -266,7 +266,7 @@ class Atari : public jcanvas::Window, public jcanvas::KeyListener {
       loop(diff.count());
       draw(ctx);
 
-      _screen->GetGraphics()->SetAntialias(jcanvas::jantialias_mode_t::None);
+      _screen->GetGraphics()->SetAntialias(jcanvas::jantialias_t::None);
 
       std::shared_ptr<jcanvas::Image>
         scaled = _screen->Scale(GetSize());
